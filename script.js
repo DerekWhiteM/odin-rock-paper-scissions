@@ -5,7 +5,7 @@ function getComputerChoice() {
 }
 
 function playRound(playerSelection, computerSelection) {
-    
+
     // Define rules
     const options = [
         {
@@ -49,17 +49,20 @@ function game() {
 
     // Scoreboard
     const score = {
+        max: 5,
         player: 0,
         computer: 0
     };
 
-    // Play five rounds
-    for (let i = 0; i < 5; i++) {
+    // Play round when user selects an option
+    const options = document.querySelectorAll('#choices button');
 
-        // Play round
-        const round = playRound(prompt('Rock, paper, or scissors?'), getComputerChoice());
+    options.forEach(option => option.addEventListener('click', handleSelection));
 
-        // Log the result message
+    function handleSelection(e) {
+
+        const round = playRound(e.target.value, getComputerChoice());
+        
         console.log(round.message);
 
         // Adjust score accordingly or replay the round if a draw
@@ -71,12 +74,24 @@ function game() {
                 score.player++;
                 break;
             case 2: // Draw
-                i--;
                 break;
         }
+
+        setScoreboard();
+
+        // When the game is complete, announce the winner and start over
+        if (score.player >= score.max || score.computer >= score.max) {
+            const winner = () => score.player > score.computer ? `You win ${score.player}-${score.computer}!` : `You lose ${score.player}-${score.computer}!`
+            alert(winner());
+            score.player = 0;
+            score.computer = 0;
+            setScoreboard();
+        }
+
+        function setScoreboard() {
+            document.querySelector('#score span').textContent = `${score.player} - ${score.computer}`;
+        }
     }
-    const winner = () => score.player > score.computer ? `You win ${score.player}-${score.computer}!` : `You lose ${score.player}-${score.computer}!`
-    console.log(winner());
 }
 
 game();
